@@ -1,0 +1,10 @@
+*.o
+*.plot
+*.ps
+dist
+.DS_Store
+.cabal-sandbox
+cabal.sandbox.config
+.stack-work
+
+.flowdock-rest-api-token
