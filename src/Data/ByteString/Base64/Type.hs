@@ -14,6 +14,7 @@
  ----------------------------------------------------------------------------
 module Data.ByteString.Base64.Type (
     ByteString64(..),
+    getEncodedByteString64,
     module Data.ByteString
   ) where
 
@@ -31,7 +32,7 @@ import Data.Hashable            (Hashable)
 import Data.Semigroup
 import Data.Serialize           (Serialize)
 import Data.String              (IsString (..))
-import Data.Text.Encoding       (decodeUtf8With, encodeUtf8)
+import Data.Text.Encoding       (decodeLatin1, encodeUtf8)
 import Data.Text.Encoding.Error (ignore)
 import GHC.Generics             (Generic)
 
@@ -39,8 +40,12 @@ import GHC.Generics             (Generic)
 newtype ByteString64 = ByteString64 { getByteString64 :: ByteString }
     deriving (Eq, Show, Ord, Data, Typeable, Generic)
 
+-- | Get base64 encode bytestring
+getEncodedByteString64 :: ByteString64 -> ByteString
+getEncodedByteString64 = Base64.encode . getByteString64
+
 instance ToJSON ByteString64 where
-    toJSON = toJSON . decodeUtf8With ignore  . Base64.encode . getByteString64
+    toJSON = toJSON . decodeLatin1 . getEncodedByteString64
 
 instance FromJSON ByteString64 where
     parseJSON = withText "ByteString" $
