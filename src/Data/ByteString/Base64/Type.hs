@@ -33,7 +33,6 @@ import Data.Semigroup
 import Data.Serialize           (Serialize)
 import Data.String              (IsString (..))
 import Data.Text.Encoding       (decodeLatin1, encodeUtf8)
-import Data.Text.Encoding.Error (ignore)
 import GHC.Generics             (Generic)
 
 -- | Aeson serialisable bytestring. Uses base64 encoding.
