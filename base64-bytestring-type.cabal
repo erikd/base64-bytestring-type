@@ -1,21 +1,21 @@
--- This file has been generated from package.yaml by hpack version 0.15.0.
+-- This file has been generated from package.yaml by hpack version 0.14.1.
 --
 -- see: https://github.com/sol/hpack
 
-name:                base64-bytestring-type
-version:             0.1.0.0
-synopsis:            A newtype around ByteString, for base64 encoding
-description:         A newtype around ByteString, for base64 encoding
-homepage:            https://github.com/futurice/haskell-base64-bytestring-type#readme
-bug-reports:         https://github.com/futurice/haskell-base64-bytestring-type/issues
-license:             BSD3
-license-file:        LICENSE
-author:              Oleg Grenrus <oleg.grenrus@iki.fi>
-maintainer:          Oleg Grenrus <oleg.grenrus@iki.fi>
-category:            Web
-tested-with:         GHC==7.8.4, GHC==7.10.2
-build-type:          Simple
-cabal-version:       >= 1.10
+name:           base64-bytestring-type
+version:        0.1.0.0
+synopsis:       A newtype around ByteString, for base64 encoding
+description:    A newtype around ByteString, for base64 encoding
+category:       Web
+homepage:       https://github.com/futurice/haskell-base64-bytestring-type#readme
+bug-reports:    https://github.com/futurice/haskell-base64-bytestring-type/issues
+author:         Oleg Grenrus <oleg.grenrus@iki.fi>
+maintainer:     Oleg Grenrus <oleg.grenrus@iki.fi>
+license:        BSD3
+license-file:   LICENSE
+tested-with:    GHC==7.8.4, GHC==7.10.2
+build-type:     Simple
+cabal-version:  >= 1.10
 
 extra-source-files:
     README.md
