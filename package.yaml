@@ -15,7 +15,7 @@ ghc-options: -Wall
 
 dependencies:
   - base               >=4.7      && <4.10
-  - aeson              >=0.8.0.2  && <1.1
+  - aeson              >=0.8.0.2  && <1.2
   - base64-bytestring  >=1.0.0.1  && <1.1
   - binary             >=0.7.1.0  && <0.9
   - bytestring         >=0.10.4.0 && <0.11
