@@ -1,9 +1,5 @@
--- This file has been generated from package.yaml by hpack version 0.17.0.
---
--- see: https://github.com/sol/hpack
-
 name:           base64-bytestring-type
-version:        0.1.0.0
+version:        0
 synopsis:       A newtype around ByteString, for base64 encoding
 description:    A newtype around ByteString, for base64 encoding
 category:       Web
@@ -50,16 +46,16 @@ test-suite tests
       test
   ghc-options: -Wall
   build-depends:
-      base               >=4.7      && <4.11
-    , aeson              >=0.8.0.2  && <1.3
-    , base64-bytestring  >=1.0.0.1  && <1.1
-    , binary             >=0.7.1.0  && <0.10
-    , bytestring         >=0.10.4.0 && <0.11
-    , cereal             >=0.4.1.1  && <0.6
-    , deepseq            >=1.3.0.2  && <1.5
-    , hashable           >=1.2.3.3  && <1.3
-    , semigroups         >=0.16.2.2 && <0.19
-    , text               >=1.2.0.6  && <1.3
+      base
+    , aeson
+    , base64-bytestring
+    , binary
+    , bytestring
+    , cereal
+    , deepseq
+    , hashable
+    , semigroups
+    , text
     , base64-bytestring-type
     , tasty             >=0.10.0.2 && <0.12
     , tasty-quickcheck  >=0.8.3.2  && <0.10
