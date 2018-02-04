@@ -1,9 +1,9 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
--- | Strict 'ByteString' standard base64 encoding.
+-- | Lazy 'ByteString' standard base64 encoding.
 --
 -- See <https://tools.ietf.org/html/rfc4648>.
-module Data.ByteString.Base64.Type (
+module Data.ByteString.Base64.Lazy.Type (
     ByteString64,
     makeByteString64,
     getByteString64,
@@ -13,19 +13,20 @@ module Data.ByteString.Base64.Type (
 import Prelude ()
 import Prelude.Compat
 
-import Control.DeepSeq    (NFData (..))
-import Data.Aeson         (FromJSON (..), ToJSON (..), withText)
-import Data.Binary        (Binary (..))
-import Data.ByteString    (ByteString)
-import Data.Data          (Data, Typeable)
-import Data.Hashable      (Hashable)
-import Data.Semigroup     (Semigroup (..))
-import Data.Serialize     (Serialize)
-import Data.String        (IsString (..))
-import Data.Text.Encoding (decodeLatin1, encodeUtf8)
-import GHC.Generics       (Generic)
+import Control.DeepSeq         (NFData (..))
+import Data.Aeson              (FromJSON (..), ToJSON (..), withText)
+import Data.Binary             (Binary (..))
+import Data.ByteString.Lazy    (ByteString, fromStrict)
+import Data.Data               (Data, Typeable)
+import Data.Hashable           (Hashable)
+import Data.Semigroup          (Semigroup (..))
+import Data.Serialize          (Serialize)
+import Data.String             (IsString (..))
+import Data.Text.Encoding      (encodeUtf8)
+import Data.Text.Lazy.Encoding (decodeLatin1)
+import GHC.Generics            (Generic)
 
-import qualified Data.ByteString.Base64 as Base64
+import qualified Data.ByteString.Base64.Lazy as Base64
 
 -- | Aeson serialisable bytestring. Uses base64 encoding.
 --
@@ -78,7 +79,7 @@ instance ToJSON ByteString64 where
 
 instance FromJSON ByteString64 where
     parseJSON = withText "ByteString" $
-        either fail (pure . BS64) . Base64.decode . encodeUtf8
+        either fail (pure . BS64) . Base64.decode . fromStrict . encodeUtf8
 
 -- | 'ByteString64' is serialised as 'ByteString'
 instance Serialize ByteString64

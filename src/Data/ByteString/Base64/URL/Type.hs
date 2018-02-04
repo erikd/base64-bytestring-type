@@ -1,9 +1,9 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
--- | Strict 'ByteString' standard base64 encoding.
+-- | Strict 'ByteString' base64 encoding with URL and filename safe alphabet.
 --
 -- See <https://tools.ietf.org/html/rfc4648>.
-module Data.ByteString.Base64.Type (
+module Data.ByteString.Base64.URL.Type (
     ByteString64,
     makeByteString64,
     getByteString64,
@@ -25,7 +25,7 @@ import Data.String        (IsString (..))
 import Data.Text.Encoding (decodeLatin1, encodeUtf8)
 import GHC.Generics       (Generic)
 
-import qualified Data.ByteString.Base64 as Base64
+import qualified Data.ByteString.Base64.URL as Base64
 
 -- | Aeson serialisable bytestring. Uses base64 encoding.
 --
@@ -45,10 +45,10 @@ import qualified Data.ByteString.Base64 as Base64
 -- >>> Aeson.encode bs64
 -- "\"Zm9vYmFy\""
 --
--- This module uses standard alphabet
+-- This module uses URL and filename safe alphabet
 --
 -- >>> Aeson.encode (makeByteString64 "aa\191")
--- "\"YWG/\""
+-- "\"YWG_\""
 --
 newtype ByteString64 = BS64 ByteString
     deriving (Eq, Show, Ord, Data, Typeable, Generic)
@@ -57,7 +57,7 @@ newtype ByteString64 = BS64 ByteString
 makeByteString64 :: ByteString -> ByteString64
 makeByteString64 = BS64
 
--- | Unwrap 'ByteString' from 'ByteString64'. Essentially 'coerce'.
+-- | Unwrap 'ByteString' from 'ByteString65'. Essentially 'coerce'.
 getByteString64 :: ByteString64 -> ByteString
 getByteString64 = \(BS64 bs) -> bs
 
@@ -67,7 +67,7 @@ getByteString64 = \(BS64 bs) -> bs
 -- "Zm9vYmFy"
 --
 -- >>> getEncodedByteString64 "aa\191"
--- "YWG/"
+-- "YWG_"
 --
 getEncodedByteString64 :: ByteString64 -> ByteString
 getEncodedByteString64 = Base64.encode . getByteString64

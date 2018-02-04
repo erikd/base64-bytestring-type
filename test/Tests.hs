@@ -1,13 +1,17 @@
 module Main (main) where
 
-import qualified Data.Aeson as A
-import qualified Data.Binary as B
-import qualified Data.Serialize as C
+import Test.Tasty
+import Test.Tasty.QuickCheck (testProperty, (===))
 
-import           Test.Tasty
-import           Test.Tasty.QuickCheck as QC
-
-import           Data.ByteString.Base64.Type
+import qualified Data.Aeson                       as A
+import qualified Data.Binary                      as B
+import qualified Data.ByteString                  as BS
+import qualified Data.ByteString.Base64.Lazy.Type as L
+import qualified Data.ByteString.Base64.Type      as S
+import qualified Data.ByteString.Base64.URL.Lazy.Type as UL
+import qualified Data.ByteString.Base64.URL.Type      as US
+import qualified Data.ByteString.Lazy             as LBS
+import qualified Data.Serialize                   as C
 
 main :: IO ()
 main = defaultMain tests
@@ -20,16 +24,61 @@ tests = testGroup "Tests"
   ]
 
 aeson :: TestTree
-aeson = QC.testProperty "Aeson" prop
-  where prop ws = let bs64 = ByteString64 (pack ws)
-                 in A.decode (A.encode [bs64]) === Just [bs64]
+aeson = testGroup "Aeson"
+    [ testProperty "strict"     propS
+    , testProperty "lazy"       propL
+    , testProperty "strict url" propUL
+    , testProperty "lazy url"   propUS
+    ]
+  where
+    propS ws = let bs64 = S.makeByteString64 (BS.pack ws)
+               in A.decode (A.encode bs64) === Just bs64
+
+    propL ws = let bs64 = L.makeByteString64 (LBS.pack ws)
+               in A.decode (A.encode bs64) === Just bs64
+
+    propUS ws = let bs64 = US.makeByteString64 (BS.pack ws)
+                in A.decode (A.encode bs64) === Just bs64
+
+    propUL ws = let bs64 = UL.makeByteString64 (LBS.pack ws)
+                in A.decode (A.encode bs64) === Just bs64
 
 binary :: TestTree
-binary = QC.testProperty "Binary" prop
-  where prop ws = let bs64 = ByteString64 (pack ws)
-                  in B.decode (B.encode bs64) === bs64
+binary = testGroup "Binary"
+    [ testProperty "strict"     propS
+    , testProperty "lazy"       propL
+    , testProperty "strict url" propUL
+    , testProperty "lazy url"   propUS
+    ]
+  where
+    propS ws = let bs64 = S.makeByteString64 (BS.pack ws)
+               in B.decode (B.encode bs64) === bs64
+
+    propL ws = let bs64 = L.makeByteString64 (LBS.pack ws)
+               in B.decode (B.encode bs64) === bs64
+
+    propUS ws = let bs64 = US.makeByteString64 (BS.pack ws)
+                in B.decode (B.encode bs64) === bs64
+
+    propUL ws = let bs64 = UL.makeByteString64 (LBS.pack ws)
+                in B.decode (B.encode bs64) === bs64
 
 cereal :: TestTree
-cereal = QC.testProperty "Cereal" prop
-  where prop ws = let bs64 = ByteString64 (pack ws)
-                  in C.decode (C.encode bs64) === Right bs64
+cereal = testGroup "Cereal"
+    [ testProperty "strict"     propS
+    , testProperty "lazy"       propL
+    , testProperty "strict url" propUL
+    , testProperty "lazy url"   propUS
+    ]
+  where
+    propS ws = let bs64 = S.makeByteString64 (BS.pack ws)
+               in C.decode (C.encode bs64) === Right bs64
+
+    propL ws = let bs64 = L.makeByteString64 (LBS.pack ws)
+               in C.decode (C.encode bs64) === Right bs64
+
+    propUS ws = let bs64 = US.makeByteString64 (BS.pack ws)
+                in C.decode (C.encode bs64) === Right bs64
+
+    propUL ws = let bs64 = UL.makeByteString64 (LBS.pack ws)
+                in C.decode (C.encode bs64) === Right bs64
