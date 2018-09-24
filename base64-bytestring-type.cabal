@@ -1,6 +1,6 @@
 name:           base64-bytestring-type
 version:        1
-x-revision:     3
+x-revision:     4
 synopsis:       A newtype around ByteString, for base64 encoding
 description:
   A newtype around ByteString, for base64 encoding.
