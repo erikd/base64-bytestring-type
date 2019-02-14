@@ -15,6 +15,7 @@ module Data.ByteString.Base64.Type (
 import Prelude ()
 import Prelude.Compat
 
+import Codec.Serialise    (Serialise (..))
 import Control.DeepSeq    (NFData (..))
 import Data.Aeson
        (FromJSON (..), FromJSONKey (..), ToJSON (..), ToJSONKey (..), withText)
@@ -135,6 +136,13 @@ instance FromJSONKey ByteString64 where
 
 -- | 'ByteString64' is serialised as 'ByteString'
 instance Serialize ByteString64
+
+-------------------------------------------------------------------------------
+-- serialise
+-------------------------------------------------------------------------------
+
+-- | 'ByteString64' is serialised as 'ByteString'
+instance Serialise ByteString64
 
 -------------------------------------------------------------------------------
 -- binary
