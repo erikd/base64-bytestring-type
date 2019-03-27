@@ -139,6 +139,9 @@ instance FromJSONKey ByteString64 where
 
 #ifdef MIN_VERSION_cereal
 -- | 'ByteString64' is serialised as 'ByteString'
+--
+-- >>> Cereal.encode (mkBS64 "foobar")
+-- "\NUL\NUL\NUL\NUL\NUL\NUL\NUL\ACKfoobar"
 instance Serialize ByteString64
 #endif
 
@@ -147,6 +150,9 @@ instance Serialize ByteString64
 -------------------------------------------------------------------------------
 
 -- | 'ByteString64' is serialised as 'ByteString'
+--
+-- >>> Binary.encode (mkBS64 "foobar")
+-- "\NUL\NUL\NUL\NUL\NUL\NUL\NUL\ACKfoobar"
 instance Binary ByteString64 where
     put = put . getBS64
     get = fmap makeByteString64 get
@@ -167,5 +173,6 @@ instance Function ByteString64 where
 
 -- $setup
 -- >>> :set -XOverloadedStrings
+-- >>> import qualified Data.Serialize as Cereal
 -- >>> import qualified Data.Binary as Binary
 -- >>> import qualified Data.Aeson as Aeson
