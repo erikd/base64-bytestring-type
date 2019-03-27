@@ -1,0 +1,11 @@
+branches: master
+doctest: True
+
+constraint-set without-cereal
+  constraints: base64-bytestring-type -cereal
+
+constraint-set without-serialise
+  constraints: base64-bytestring-type -serialise
+
+constraint-set without-http-api-data
+  constraints: base64-bytestring-type -http-api-data

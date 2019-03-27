@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP                #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
 -- | Strict 'ByteString' base64 encoding with URL and filename safe alphabet.
@@ -24,7 +25,6 @@ import Data.ByteString    (ByteString, pack, unpack)
 import Data.Data          (Data, Typeable)
 import Data.Hashable      (Hashable)
 import Data.Semigroup     (Semigroup (..))
-import Data.Serialize     (Serialize)
 import Data.String        (IsString (..))
 import Data.Text.Encoding (decodeLatin1, encodeUtf8)
 import GHC.Generics       (Generic)
@@ -33,6 +33,10 @@ import Test.QuickCheck
        shrinkMap)
 
 import qualified Data.ByteString.Base64.URL as Base64
+
+#ifdef MIN_VERSION_cereal
+import Data.Serialize (Serialize)
+#endif
 
 -- | Aeson serialisable bytestring. Uses base64 encoding.
 --
@@ -130,8 +134,10 @@ instance FromJSONKey ByteString64 where
 -- cereal
 -------------------------------------------------------------------------------
 
+#ifdef MIN_VERSION_cereal
 -- | 'ByteString64' is serialised as 'ByteString'
 instance Serialize ByteString64
+#endif
 
 -------------------------------------------------------------------------------
 -- binary

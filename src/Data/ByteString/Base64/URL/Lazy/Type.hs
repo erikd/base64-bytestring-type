@@ -25,10 +25,9 @@ import Data.ByteString.Lazy    (ByteString, pack, unpack)
 import Data.Data               (Data, Typeable)
 import Data.Hashable           (Hashable)
 import Data.Semigroup          (Semigroup (..))
-import Data.Serialize          (Serialize)
 import Data.String             (IsString (..))
 import Data.Text.Lazy          (fromStrict, toStrict)
-import Data.Text.Lazy.Encoding (decodeLatin1, encodeUtf8, )
+import Data.Text.Lazy.Encoding (decodeLatin1, encodeUtf8)
 import GHC.Generics            (Generic)
 import Test.QuickCheck
        (Arbitrary (..), CoArbitrary (..), Function (..), functionMap,
@@ -36,9 +35,10 @@ import Test.QuickCheck
 
 import qualified Data.ByteString.Base64.URL.Lazy as Base64
 
-#if !(MIN_VERSION_bytestring(0,10,0))
-import Data.ByteString.Lazy.Internal (ByteString (..))
+#ifdef MIN_VERSION_cereal
+import Data.Serialize     (Serialize)
 #endif
+
 
 -- | Aeson serialisable bytestring. Uses base64 encoding.
 --
@@ -144,8 +144,10 @@ instance FromJSONKey ByteString64 where
 -- cereal
 -------------------------------------------------------------------------------
 
+#ifdef MIN_VERSION_cereal
 -- | 'ByteString64' is serialised as 'ByteString'
 instance Serialize ByteString64
+#endif
 
 -------------------------------------------------------------------------------
 -- binary
