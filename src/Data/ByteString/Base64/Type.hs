@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP                #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
 -- | Strict 'ByteString' standard base64 encoding.
@@ -24,7 +25,6 @@ import Data.ByteString    (ByteString, pack, unpack)
 import Data.Data          (Data, Typeable)
 import Data.Hashable      (Hashable)
 import Data.Semigroup     (Semigroup (..))
-import Data.Serialize     (Serialize)
 import Data.String        (IsString (..))
 import Data.Text.Encoding (decodeLatin1, encodeUtf8)
 import GHC.Generics       (Generic)
@@ -33,6 +33,19 @@ import Test.QuickCheck
        shrinkMap)
 
 import qualified Data.ByteString.Base64 as Base64
+import qualified Data.Text              as T
+
+#ifdef MIN_VERSION_cereal
+import Data.Serialize (Serialize)
+#endif
+
+#ifdef MIN_VERSION_serialise
+import Codec.Serialise (Serialise (..))
+#endif
+
+#ifdef MIN_VERSION_http_api_data
+import Web.HttpApiData (FromHttpApiData (..), ToHttpApiData (..))
+#endif
 
 -- | Aeson serialisable bytestring. Uses base64 encoding.
 --
@@ -133,17 +146,56 @@ instance FromJSONKey ByteString64 where
 -- cereal
 -------------------------------------------------------------------------------
 
+#ifdef MIN_VERSION_cereal
 -- | 'ByteString64' is serialised as 'ByteString'
+--
+-- >>> Cereal.encode (mkBS64 "foobar")
+-- "\NUL\NUL\NUL\NUL\NUL\NUL\NUL\ACKfoobar"
 instance Serialize ByteString64
+#endif
 
 -------------------------------------------------------------------------------
 -- binary
 -------------------------------------------------------------------------------
 
 -- | 'ByteString64' is serialised as 'ByteString'
+--
+-- >>> Binary.encode (mkBS64 "foobar")
+-- "\NUL\NUL\NUL\NUL\NUL\NUL\NUL\ACKfoobar"
 instance Binary ByteString64 where
     put = put . getBS64
     get = fmap makeByteString64 get
+
+-------------------------------------------------------------------------------
+-- serialise
+-------------------------------------------------------------------------------
+
+#ifdef MIN_VERSION_serialise
+-- | >>> Serialise.serialise (mkBS64 "xyzzy")
+-- "Exyzzy"
+instance Serialise ByteString64 where
+    encode = encode . getBS64
+    decode = fmap makeByteString64 decode
+#endif
+
+-------------------------------------------------------------------------------
+-- http-api-data
+-------------------------------------------------------------------------------
+
+#ifdef MIN_VERSION_http_api_data
+-- | >>> HTTP.toUrlPiece (mkBS64 $ pack [164..192])
+-- "pKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2+v8A="
+--
+-- /Note:/ the plus in the encoding.
+-- Consider using "Data.ByteString.Base64.URL.Type" variant.
+instance ToHttpApiData ByteString64 where
+    toUrlPiece = decodeLatin1 . getEncodedByteString64
+    toHeader = getEncodedByteString64
+
+instance FromHttpApiData ByteString64 where
+    parseUrlPiece = either (Left .T.pack) (Right . mkBS64) . Base64.decode . encodeUtf8
+    parseHeader = either (Left . T.pack) (Right . mkBS64) . Base64.decode
+#endif
 
 -------------------------------------------------------------------------------
 -- QuickCheck
@@ -161,5 +213,8 @@ instance Function ByteString64 where
 
 -- $setup
 -- >>> :set -XOverloadedStrings
+-- >>> import qualified Codec.Serialise as Serialise
+-- >>> import qualified Data.Serialize as Cereal
 -- >>> import qualified Data.Binary as Binary
 -- >>> import qualified Data.Aeson as Aeson
+-- >>> import qualified Web.HttpApiData as HTTP

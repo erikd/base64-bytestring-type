@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP                #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
 -- | Lazy 'ByteString' base64 encoding with URL and filename safe alphabet.
@@ -25,10 +25,9 @@ import Data.ByteString.Lazy    (ByteString, pack, unpack)
 import Data.Data               (Data, Typeable)
 import Data.Hashable           (Hashable)
 import Data.Semigroup          (Semigroup (..))
-import Data.Serialize          (Serialize)
 import Data.String             (IsString (..))
 import Data.Text.Lazy          (fromStrict, toStrict)
-import Data.Text.Lazy.Encoding (decodeLatin1, encodeUtf8, )
+import Data.Text.Lazy.Encoding (decodeLatin1, encodeUtf8)
 import GHC.Generics            (Generic)
 import Test.QuickCheck
        (Arbitrary (..), CoArbitrary (..), Function (..), functionMap,
@@ -36,8 +35,12 @@ import Test.QuickCheck
 
 import qualified Data.ByteString.Base64.URL.Lazy as Base64
 
-#if !(MIN_VERSION_bytestring(0,10,0))
-import Data.ByteString.Lazy.Internal (ByteString (..))
+#ifdef MIN_VERSION_cereal
+import Data.Serialize (Serialize)
+#endif
+
+#ifdef MIN_VERSION_serialise
+import Codec.Serialise (Serialise (..))
 #endif
 
 -- | Aeson serialisable bytestring. Uses base64 encoding.
@@ -144,17 +147,37 @@ instance FromJSONKey ByteString64 where
 -- cereal
 -------------------------------------------------------------------------------
 
+#ifdef MIN_VERSION_cereal
 -- | 'ByteString64' is serialised as 'ByteString'
+--
+-- >>> Cereal.encode (mkBS64 "foobar")
+-- "\NUL\NUL\NUL\NUL\NUL\NUL\NUL\ACKfoobar"
 instance Serialize ByteString64
+#endif
 
 -------------------------------------------------------------------------------
 -- binary
 -------------------------------------------------------------------------------
 
 -- | 'ByteString64' is serialised as 'ByteString'
+--
+-- >>> Binary.encode (mkBS64 "foobar")
+-- "\NUL\NUL\NUL\NUL\NUL\NUL\NUL\ACKfoobar"
 instance Binary ByteString64 where
     put = put . getBS64
     get = fmap makeByteString64 get
+
+-------------------------------------------------------------------------------
+-- serialise
+-------------------------------------------------------------------------------
+
+#ifdef MIN_VERSION_serialise
+-- | >>> Serialise.serialise (mkBS64 "xyzzy")
+-- "_Exyzzy\255"
+instance Serialise ByteString64 where
+    encode = encode . getBS64
+    decode = fmap makeByteString64 decode
+#endif
 
 -------------------------------------------------------------------------------
 -- QuickCheck
@@ -172,5 +195,7 @@ instance Function ByteString64 where
 
 -- $setup
 -- >>> :set -XOverloadedStrings
+-- >>> import qualified Codec.Serialise as Serialise
+-- >>> import qualified Data.Serialize as Cereal
 -- >>> import qualified Data.Binary as Binary
 -- >>> import qualified Data.Aeson as Aeson
