@@ -39,6 +39,9 @@ import qualified Data.ByteString.Base64.URL.Lazy as Base64
 import Data.Serialize (Serialize)
 #endif
 
+#ifdef MIN_VERSION_serialise
+import Codec.Serialise (Serialise (..))
+#endif
 
 -- | Aeson serialisable bytestring. Uses base64 encoding.
 --
@@ -165,6 +168,18 @@ instance Binary ByteString64 where
     get = fmap makeByteString64 get
 
 -------------------------------------------------------------------------------
+-- serialise
+-------------------------------------------------------------------------------
+
+#ifdef MIN_VERSION_serialise
+-- | >>> Serialise.serialise (mkBS64 "xyzzy")
+-- "_Exyzzy\255"
+instance Serialise ByteString64 where
+    encode = encode . getBS64
+    decode = fmap makeByteString64 decode
+#endif
+
+-------------------------------------------------------------------------------
 -- QuickCheck
 -------------------------------------------------------------------------------
 
@@ -180,6 +195,7 @@ instance Function ByteString64 where
 
 -- $setup
 -- >>> :set -XOverloadedStrings
+-- >>> import qualified Codec.Serialise as Serialise
 -- >>> import qualified Data.Serialize as Cereal
 -- >>> import qualified Data.Binary as Binary
 -- >>> import qualified Data.Aeson as Aeson

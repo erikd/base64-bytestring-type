@@ -99,7 +99,15 @@ test-suite tests
     , base64-bytestring-type
     , binary
     , bytestring
-    , cereal
+
+  if flag(cereal)
+    build-depends: cereal
+
+  if flag(serialise)
+    build-depends: serialise
+
+  if flag(http-api-data)
+    build-depends: http-api-data
 
   -- other dependencies
   build-depends:
