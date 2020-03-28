@@ -1,2 +1,6 @@
 packages: .
-allow-newer: cborg:semigroups
+allow-newer: cborg-0.2.2.1:semigroups
+allow-newer: cborg-0.2.2.1:base
+allow-newer: cborg-0.2.2.1:ghc-prim
+allow-newer: serialise-0.2.2.0:base
+allow-newer: serialise-0.2.2.0:ghc-prim
