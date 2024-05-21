@@ -1,1 +1,15 @@
 packages: .
+
+
+source-repository-package
+  type: git
+  location: https://github.com/erikd/cborg
+  tag: 01f32360e2a3945a76e36ed9989e586f55675286
+  subdir:
+    cborg
+    serialise
+
+source-repository-package
+  type: git
+  location: https://github.com/erikd/http-api-data
+  tag: 27524abf3a4d11250b7affff847ae871e902b987
