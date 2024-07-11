@@ -8,10 +8,10 @@ description:
   Strict and lazy, normal and url alphabet variants.
 
 category:           Data
-homepage:           https://github.com/phadej/base64-bytestring-type#readme
-bug-reports:        https://github.com/phadej/base64-bytestring-type/issues
+homepage:           https://github.com/erikd/base64-bytestring-type#readme
+bug-reports:        https://github.com/erikd/base64-bytestring-type/issues
 author:             Oleg Grenrus <oleg.grenrus@iki.fi>
-maintainer:         Oleg Grenrus <oleg.grenrus@iki.fi>
+maintainer:         Erik de Castro Lopo <erikd@mega-nerd.com>
 license:            BSD3
 license-file:       LICENSE
 build-type:         Simple
@@ -27,8 +27,9 @@ tested-with:
    || ==9.0.2
    || ==9.2.8
    || ==9.4.8
-   || ==9.6.3
-   || ==9.8.1
+   || ==9.6.5
+   || ==9.8.2
+   || ==9.10.1
 
 extra-source-files:
   README.md
@@ -36,7 +37,7 @@ extra-source-files:
 
 source-repository head
   type:     git
-  location: https://github.com/futurice/haskell-base64-bytestring-type
+  location: https://github.com/erikd/base64-bytestring-type
 
 flag cereal
   description: Instances for @Serialize@ from @cereal@ package
@@ -62,7 +63,7 @@ library
   -- boot libraries
   -- https://ghc.haskell.org/trac/ghc/wiki/Commentary/Libraries/VersionHistory
   build-depends:
-      base        >=4.7.0.0  && <4.20
+      base        >=4.7.0.0  && <4.21
     , binary      >=0.7.1.0  && <0.10
     , bytestring  >=0.10.4.0 && <0.13
     , deepseq     >=1.3.0.2  && <1.6
@@ -71,10 +72,10 @@ library
   -- other dependencies:
   build-depends:
       aeson              >=1.2.3.0 && <1.6 || >=2.0 && <2.3
-    , base-compat        >=0.9.3   && <0.14
+    , base-compat        >=0.9.3   && <0.15
     , base64-bytestring  >=1.0.0.1 && <1.3
-    , hashable           >=1.2.6.1 && <1.5
-    , QuickCheck         >=2.11.3  && <2.15
+    , hashable           >=1.2.6.1 && <1.6
+    , QuickCheck         >=2.11.3  && <2.16
 
   if !impl(ghc >=8.0)
     build-depends: semigroups >=0.18.5 && <0.21
@@ -123,4 +124,4 @@ test-suite tests
   -- other dependencies
   build-depends:
       tasty             >=1.2.1 && <1.6
-    , tasty-quickcheck  >=0.10  && <0.11
+    , tasty-quickcheck  >=0.10  && <0.12
