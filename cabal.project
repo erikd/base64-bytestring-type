@@ -1,1 +1,23 @@
 packages: .
+
+if impl (ghc >= 9.12)
+  allow-newer:
+    , assoc:base
+    , cborg:base
+    , containers:base
+    , data-fix:base
+    , hashable:base
+    , http-api-data:base
+    , indexed-traversable:base
+    , indexed-traversable-instances:base
+    , integer-conversion:base
+    , integer-logarithms:base
+    , OneTuple:base
+    , scientific:base
+    , semialign:base
+    , serialise:base
+    , splitmix:base
+    , text-short:base
+    , these:base
+    , time-compat:base
+    , unix:base
