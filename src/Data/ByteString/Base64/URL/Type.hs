@@ -22,7 +22,7 @@ import Data.Aeson
 import Data.Aeson.Types   (FromJSONKeyFunction (..), toJSONKeyText)
 import Data.Binary        (Binary (..))
 import Data.ByteString    (ByteString, pack, unpack)
-import Data.Data          (Data, Typeable)
+import Data.Data          (Data)
 import Data.Hashable      (Hashable)
 import Data.Semigroup     (Semigroup (..))
 import Data.String        (IsString (..))
@@ -71,7 +71,7 @@ import Web.HttpApiData (FromHttpApiData (..), ToHttpApiData (..))
 -- "\"YWG_\""
 --
 newtype ByteString64 = BS64 ByteString
-    deriving (Eq, Ord, Data, Typeable, Generic)
+    deriving (Eq, Ord, Data, Generic)
 
 instance Show ByteString64 where
     showsPrec d (BS64 bs) = showParen (d > 10) $ showString "mkBS64 " . showsPrec 11 bs
