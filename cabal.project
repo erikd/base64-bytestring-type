@@ -1,23 +1,46 @@
 packages: .
 
-if impl (ghc >= 9.12)
+if impl (ghc >= 9.14)
   allow-newer:
+    , aeson:containers
+    , aeson:template-haskell
     , assoc:base
+    , bifunctors:template-haskell
     , cborg:base
-    , containers:base
+    , cborg:containers
     , data-fix:base
+    , generically:base
     , hashable:base
+    , hashable:containers
+    , hashable:ghc-bignum
     , http-api-data:base
+    , http-api-data:containers
     , indexed-traversable:base
+    , indexed-traversable:containers
     , indexed-traversable-instances:base
     , integer-conversion:base
     , integer-logarithms:base
+    , integer-logarithms:ghc-bignum
     , OneTuple:base
+    , primitive:base
     , scientific:base
+    , scientific:containers
+    , scientific:template-haskell
     , semialign:base
+    , semialign:containers
     , serialise:base
+    , serialise:containers
     , splitmix:base
+    , tagged:template-haskell
+    , text:base
     , text-short:base
+    , text-short:template-haskell
+    , th-abstraction:template-haskell
+    , th-compat:template-haskell
     , these:base
     , time-compat:base
-    , unix:base
+    , unordered-containers:template-haskell
+    , uuid-types:template-haskell
+    , vector:base
+    , vector-stream:base
+    , witherable:containers
