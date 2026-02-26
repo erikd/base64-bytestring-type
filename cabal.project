@@ -1,5 +1,8 @@
 packages: .
 
+constraints:
+  , QuickCheck >= 2.18
+
 -- cabal-allow-newer
 if impl (ghc >= 9.14)
   allow-newer:
