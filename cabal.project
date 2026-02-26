@@ -6,13 +6,13 @@ constraints:
 -- cabal-allow-newer
 if impl (ghc >= 9.14)
   allow-newer:
+    , aeson:QuickCheck
     , aeson:containers
     , aeson:template-haskell
     , cborg:base
     , cborg:containers
     , http-api-data:base
     , http-api-data:containers
-    , http-api-data:time-compat
     , http-api-data:uuid-types
     , indexed-traversable:base
     , indexed-traversable:containers
@@ -22,5 +22,4 @@ if impl (ghc >= 9.14)
     , serialise:base
     , serialise:containers
     , these:base
-    , time-compat:base
     , uuid-types:template-haskell
