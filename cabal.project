@@ -13,6 +13,7 @@ if impl (ghc >= 9.14)
     , cborg:containers
     , http-api-data:base
     , http-api-data:containers
+    , http-api-data:text-iso8601
     , http-api-data:uuid-types
     , indexed-traversable:base
     , indexed-traversable:containers
