@@ -8,9 +8,9 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.19.20260331
+# version: 0.19.20260622
 #
-# REGENDATA ("0.19.20260331",["github","cabal.project"])
+# REGENDATA ("0.19.20260622",["github","cabal.project"])
 #
 name: Haskell-CI
 on:
@@ -42,9 +42,9 @@ jobs:
             compilerVersion: 9.14.1
             setup-method: ghcup
             allow-failure: false
-          - compiler: ghc-9.12.2
+          - compiler: ghc-9.12.4
             compilerKind: ghc
-            compilerVersion: 9.12.2
+            compilerVersion: 9.12.4
             setup-method: ghcup
             allow-failure: false
           - compiler: ghc-9.10.3
@@ -82,37 +82,12 @@ jobs:
             compilerVersion: 8.10.7
             setup-method: ghcup
             allow-failure: false
-          - compiler: ghc-8.8.4
-            compilerKind: ghc
-            compilerVersion: 8.8.4
-            setup-method: ghcup
-            allow-failure: false
-          - compiler: ghc-8.6.5
-            compilerKind: ghc
-            compilerVersion: 8.6.5
-            setup-method: ghcup
-            allow-failure: false
-          - compiler: ghc-8.4.4
-            compilerKind: ghc
-            compilerVersion: 8.4.4
-            setup-method: ghcup
-            allow-failure: false
-          - compiler: ghc-8.2.2
-            compilerKind: ghc
-            compilerVersion: 8.2.2
-            setup-method: ghcup
-            allow-failure: false
-          - compiler: ghc-8.0.2
-            compilerKind: ghc
-            compilerVersion: 8.0.2
-            setup-method: ghcup
-            allow-failure: false
       fail-fast: false
     steps:
       - name: apt-get install
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends gnupg ca-certificates dirmngr curl git software-properties-common libtinfo5 libnuma-dev
+          apt-get install -y --no-install-recommends gnupg ca-certificates dirmngr curl git software-properties-common libtinfo5
       - name: Install GHCup
         run: |
           mkdir -p "$HOME/.ghcup/bin"
@@ -187,11 +162,6 @@ jobs:
       - name: update cabal index
         run: |
           $CABAL v2-update -v
-      - name: cache (tools)
-        uses: actions/cache/restore@v4
-        with:
-          key: ${{ runner.os }}-${{ matrix.compiler }}-tools-72b17435
-          path: ~/.haskell-ci-tools
       - name: install cabal-plan
         run: |
           mkdir -p $HOME/.cabal/bin
@@ -201,18 +171,8 @@ jobs:
           rm -f cabal-plan.xz
           chmod a+x $HOME/.cabal/bin/cabal-plan
           cabal-plan --version
-      - name: install doctest
-        run: |
-          if [ $((HCNUMVER < 81000)) -ne 0 ] ; then $CABAL --store-dir=$HOME/.haskell-ci-tools/store v2-install $ARG_COMPILER --ignore-project -j2 doctest --constraint='doctest ^>=0.22.0' ; fi
-          if [ $((HCNUMVER < 81000)) -ne 0 ] ; then doctest --version ; fi
-      - name: save cache (tools)
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          key: ${{ runner.os }}-${{ matrix.compiler }}-tools-72b17435
-          path: ~/.haskell-ci-tools
       - name: checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           path: source
       - name: initial cabal.project for sdist
@@ -236,12 +196,13 @@ jobs:
           touch cabal.project
           touch cabal.project.local
           echo "packages: ${PKGDIR_base64_bytestring_type}" >> cabal.project
-          if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "package base64-bytestring-type" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods -Werror=missing-fields" >> cabal.project ; fi
+          echo "package base64-bytestring-type" >> cabal.project
+          echo "    ghc-options: -Werror=missing-methods -Werror=missing-fields" >> cabal.project
           if [ $((HCNUMVER >= 90400)) -ne 0 ] ; then echo "package base64-bytestring-type" >> cabal.project ; fi
           if [ $((HCNUMVER >= 90400)) -ne 0 ] ; then echo "    ghc-options: -Werror=unused-packages" >> cabal.project ; fi
           if [ $((HCNUMVER >= 90000)) -ne 0 ] ; then echo "package base64-bytestring-type" >> cabal.project ; fi
           if [ $((HCNUMVER >= 90000)) -ne 0 ] ; then echo "    ghc-options: -Werror=incomplete-patterns -Werror=incomplete-uni-patterns" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91400)) -ne 0 ] ; then echo "allow-newer: *:*" >> cabal.project ; fi
           cat >> cabal.project <<EOF
           constraints: QuickCheck >= 2.18
           EOF
@@ -253,7 +214,7 @@ jobs:
           $CABAL v2-build $ARG_COMPILER $ARG_TESTS $ARG_BENCH --dry-run all
           cabal-plan
       - name: restore cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           key: ${{ runner.os }}-${{ matrix.compiler }}-${{ github.sha }}
           path: ~/.cabal/store
@@ -271,11 +232,6 @@ jobs:
       - name: tests
         run: |
           $CABAL v2-test $ARG_COMPILER $ARG_TESTS $ARG_BENCH all --test-show-details=direct
-      - name: doctest
-        run: |
-          perl -i -e 'while (<ARGV>) { print unless /package-id\s+(base-compat-batteries)-\d+(\.\d+)*/; }' .ghc.environment.*
-          if [ $((HCNUMVER < 81000)) -ne 0 ] ; then cd ${PKGDIR_base64_bytestring_type} || false ; fi
-          if [ $((HCNUMVER < 81000)) -ne 0 ] ; then doctest  -XHaskell2010 src ; fi
       - name: cabal check
         run: |
           cd ${PKGDIR_base64_bytestring_type} || false
@@ -289,7 +245,7 @@ jobs:
           $CABAL v2-build $ARG_COMPILER --disable-tests --disable-benchmarks all
       - name: save cache
         if: always()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           key: ${{ runner.os }}-${{ matrix.compiler }}-${{ github.sha }}
           path: ~/.cabal/store
